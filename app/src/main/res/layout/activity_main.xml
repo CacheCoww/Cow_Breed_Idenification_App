@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="760dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/image_to_be_uploaded"
+            android:maxWidth="370dp"
+            android:maxHeight="200dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/cowbreedidentifierlogo5"
+            tools:layout_width="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/toggleButton"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:textOff="Upload Image"
+                android:textOn=" Upload Image" />
+
+            <ToggleButton
+                android:id="@+id/toggleButton1"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorPrimary"
+                android:outlineAmbientShadowColor="@android:color/black"
+                android:textColor="@android:color/white"
+                android:textOff="Web URL"
+                android:textOn="Web URL" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Select either 'Upload Image' to pick a photo from camera or 'Web URL' to enter a web address"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+
+            android:id="@+id/btnSelectPhoto"
+
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+
+            android:text="Select Photo from Camera Roll" />
+
+        <EditText
+            android:id="@+id/enterURL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/enter_web_address_of_url_to_upload"
+            android:importantForAutofill="no"
+            android:inputType="textUri"
+            android:text="Enter Web Address..."
+            android:visibility="visible" />
+
+        <ImageView
+
+            android:id="@+id/viewImage"
+
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Enter"
+            android:visibility="visible"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="320dp" />
+
+        <TextView
+            android:id="@+id/BreedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/animal"
+            android:textSize="24sp"
+            android:visibility="visible" />
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
