@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "animal-identification-app",
+  "private_key_id": "61411926d77b44445bc0e3341cb7b363f8ed5ed8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCRyXVMefMu768\nZiOJotLdQE2U+u4v7+PhK7qtN8r8FxrEgQrrgrW38xuvExHUJeT2ULC0axH+hpdP\nEYOdH/AXDwlJ7LFP7Tb43bRTJXS+LAGD/gelJP7qIqpuIAVgBqEeYP64CzFsqEoE\nKc6EdhVOPKyEbDs7QG1P5hC3RvMIANAar3vcy2DH4Lpzib6WxSAtX5GF4idOZtg6\nKhlCseInwLsjm0tNP6OSYYzXyFnAMvmQCRHOv/qII6eVquGkdc3rQ/XMBDlwkHVK\naygFbYFCj2zdPGbFU6g21xfAV8FU8qYeWpBUo1TNk0vjFC8BQhN4Kd8elFwOJrNY\n7PgAqAWXAgMBAAECggEANbS/Y6lRIArClohRyKmnSxyMleOsVrolL8kL6Pikd33X\nm3zkzOgsXfapr4NBCXmUSvdRcf6rUcZZK7V2wcfjcixo7/OrrKGx8agwQk/3bt7x\naFCgQmnwwj7lCF53vez3O1Oq9qu5dQUsuOvpuDqAd0lUk6Lr2Nxdm5nJAzFs28gK\na98SWbTbkawVAGEij3H+jRc+mR1AUvVY90f1GWx22z2GPfaLTXxqmzJ7EHLr8R/B\np2ah2PZfYi2FbEuqocp+hfqVBBgyXG3rYd441V5dX5ovEhMY+iZAARPHXcJ6xk/C\nOyN+W3bnimbuczj0qRQ3RapQv+tCFW1r7NNHSP/mMQKBgQDjiauiR9F/YrF48ArD\niljX36Fi+DWcmtOXapq6ikmC1k1J095vVGSKpAzGOxicBbMjgmpaC4VVnSI2s+me\ni1wbUvhKxfg+e7IxfEeA0/lCSxV8PzKgxufxy+Ri+4V0E9zhw/0uFzQDc4qP0nKS\n3/yWAcAvmKFI1nNArCiX9rfbSQKBgQDalGnandjW+UMAKxSQzuQ4moe97ePMrFhY\nPoNIfOWQQX4MN0RWaU8w9USXxVb7k5asiTNAuE2dzXl4UShUgA1xMV5R+oNumtNU\nozPhBTzCduVrj+Qr+CEoliltQvOOn9JX48IgViUpWCJMbs3z4Qz2sE+RHIIv/dDZ\nKLOkqob53wKBgQDLHrLhA0u5c9kKJP724CG/VBs1xm3Vh0EsAjZuH9TPv47vQPto\nVuYJ/biJnWeyoEPyhxF5oJ8+di98tc7vgWiP29lapq+c17+S/Wa3UoNI8s4TRDdl\n3ypfZ6xR0EaqALFFuTfiVURRcGtZSHyPMPTC1H1D//S6mPX53bW/MreeQQKBgQCH\nS9Jx5b6w4j1cv03NjKKrfsuC/ttAd3V/ucIdfmHCdyeEfDkqm6jPDyJUJ2x98I8V\nYR9+chZpFSSZGvMxysmHRR2y9LOiJOemvhaAtHM1k87SU5DSvpYXv0sJPKXxpG/Y\nwzwINApwmwMv+G43BRi3Ic8+bT0QY7WAlbcMuBkwVQKBgHndCe/WPbXkqgaJ7jnZ\n7AP/U/WGIy8saxWHUFZjTViPpDaOWRrXNKsTuhfRUUXHZSHo11sYWgvum6s2vra8\n4o2JRHQOgynVVijf1eUf7aGxQIkFFKey0+b3IvxXNwVJrA9ezDFfqFZ7a0vi6wqT\nHjV+ZGyKpwl6LK7FE3b7lLJD\n-----END PRIVATE KEY-----\n",
+  "client_email": "cowlord@animal-identification-app.iam.gserviceaccount.com",
+  "client_id": "108497428352728569327",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cowlord%40animal-identification-app.iam.gserviceaccount.com"
+}
