@@ -69,3 +69,26 @@ byte[] byteArray = byteArrayOutputStream .toByteArray();
   }
 }
  */
+
+
+    /*if (button_type == 0 && bitmap != null) {
+                    try {
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                        byte[] byteArray = byteArrayOutputStream.toByteArray();
+                        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                        startAPICall(encoded);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Code here executes on main thread after user presses button
+                    startAPICall("https://cdn1-www.dogtime.com/assets/uploads/2011/01/file_23012_beagle.jpg");
+                    //Testing if button works:
+                    //Editable textTest = imageURI.getText();
+                    String testcow = imageURI.getText().toString();
+                    myTextView.setText(testcow);
+                }*/
+
+
+
