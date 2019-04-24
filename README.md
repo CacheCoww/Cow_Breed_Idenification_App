@@ -1,5 +1,5 @@
 # Cow_Breed_Idenification_App
 
-Android App designed to detect Cow Breed from image
+Android App designed to detect Cow Breed from image using Google Cloud AutoML Vision API.
 
-Will use Google Vision AutoML API
+
