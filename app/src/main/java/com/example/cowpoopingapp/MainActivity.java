@@ -50,12 +50,22 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "BreedApp:Main";
-    private static final int IMAGE_GALLERY_REQUEST = 20;
+    private static final String TAG = "BreedApp:Main"; //Tag for logging purposes
+    private static final int IMAGE_GALLERY_REQUEST = 20; //Request codes to distinguish photo gallery and camera
     private static final int CAMERA_REQUEST = 15;
     private static RequestQueue requestQueue;
     private int button_type;  //button type depending on if image was uploaded or from URL
 
+    /**
+     * Default startup activity for the app
+     * * User selects Upload or URL and the relevant text fields will become visible accordingly
+     *          * The button_type will be used in later functions to determine if user entered URL or uploaded image
+     *          * button_type:
+     *          * 0: Image from Gallery
+     *          * 1: Image from Web URL
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,56 +79,66 @@ public class MainActivity extends AppCompatActivity {
         final EditText imageURI = findViewById(R.id.enterURL);
         final Button btnURLEnter = findViewById(R.id.buttonURLEnter);
         final ImageView viewImage=(ImageView)findViewById(R.id.viewImage);
-        final Button btnOpenGallery=(Button)findViewById(R.id.btnSelectPhoto);
         final Button btnTakePhoto = (Button)findViewById(R.id.btnSelectPhoto2);
 
-        /**
-         * User selects Upload or URL and the relevant text fields will become visible accordingly
-         * The button_type will be used in later functions to determine if user entered URL or uploaded image
-         * 0: Image from Gallery
-         * 1: Image from Web URL
-         **/
 
-        //Toggle buttons:
-        final Button button_upload = findViewById(R.id.toggleButtonUpload);
+        //3 Main Button Selections
+        final Button button_camera = findViewById(R.id.toggleButtonUpload);
+        final Button btnOpenGallery=(Button)findViewById(R.id.btnSelectPhoto);
         final Button button_url = findViewById(R.id.toggleButtonURL);
 
+        //Web URL is selected
         button_url.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button_upload.setVisibility(View.GONE);
+                defaultTextView.setText("Enter Web URL of image below");
+                button_camera.setVisibility(View.GONE);
                 button_url.setVisibility(View.GONE);
+                btnOpenGallery.setVisibility(View.GONE);
                 imageURI.setVisibility(View.VISIBLE);
                 btnURLEnter.setVisibility(View.VISIBLE);
                 button_type = 1;
             }
         });
 
-        button_upload.setOnClickListener(new View.OnClickListener() {
+        //Camera is selected
+        button_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                defaultTextView.setText("Click below to open camera");
                 button_url.setVisibility(View.GONE);
-                button_upload.setVisibility(View.GONE);
-                btnOpenGallery.setVisibility(View.VISIBLE);
+                button_camera.setVisibility(View.GONE);
+                btnOpenGallery.setVisibility(View.GONE);
                 btnTakePhoto.setVisibility(View.VISIBLE);
                 button_type = 0;
             }
         });
 
-        //Select image from Gallery
+            //Open camera
+            btnTakePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                }
+            });
+
+        //Gallery is selected
+        btnOpenGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                defaultTextView.setText("Select photo from gallery");
+                button_url.setVisibility(View.GONE);
+                button_camera.setVisibility(View.GONE);
+                btnOpenGallery.setVisibility(View.GONE);
+                button_type = 0;
+            }
+        });
+
         btnOpenGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectImage();
-            }
-        });
-
-        //Take photo using phone
-        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
 
@@ -140,7 +160,10 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    //Method to select image from Phones photo gallery
+    /**
+     * Method to select image from Phones photo gallery
+     * User will be asked to provide consent for app to access the user's data
+     */
     private void selectImage() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -151,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, IMAGE_GALLERY_REQUEST);
     }
 
-    //Deal with image after it is selected from Gallery
-    Bitmap bitmap;
+    //Deal with image after it is selected from Gallery or taken with Camera
+    Bitmap bitmap; //Selected image to be display on screen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -192,6 +215,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method that begins API call to Cloud AutoML Vision Model
+     * @param url
+     */
     private void autoMLTest(String url) {
         try {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -241,16 +268,16 @@ public class MainActivity extends AppCompatActivity {
             final String token = accesstoken.getTokenValue();
             is.close();
 
-                //Set up JSON Object Payload to send to API
-                JSONObject JSONObjPayload = new JSONObject();
-                JSONObject JSONObjInner = new JSONObject();
-                JSONObject JSONObjImage = new JSONObject();
+            //Set up JSON Object Payload to send to API
+            JSONObject JSONObjPayload = new JSONObject();
+            JSONObject JSONObjInner = new JSONObject();
+            JSONObject JSONObjImage = new JSONObject();
 
-                JSONObjImage.put("imageBytes", base64webimage);
-                JSONObjInner.put("image", JSONObjImage);
-                JSONObjPayload.put("payload", JSONObjInner);
+            JSONObjImage.put("imageBytes", base64webimage);
+            JSONObjInner.put("image", JSONObjImage);
+            JSONObjPayload.put("payload", JSONObjInner);
 
-                final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                         "https://automl.googleapis.com/v1beta1/projects/animal-identification-app/locations/us-central1/models/ICN6662254112112983311:predict", JSONObjPayload,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -270,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                         headers.put("Authorization", "Bearer " + token);
                         return headers;
                     }
-                };
+            };
 
                 jsonObjectRequest.setShouldCache(false);
                 requestQueue.add(jsonObjectRequest);
@@ -280,7 +307,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Parse JSON response from model
+     * @param response
+     */
     void apiTestCallDone(JSONObject response){
         try {
             JSONObject newResponse = response;

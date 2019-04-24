@@ -1,136 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/pasturebackground1"
     tools:context=".MainActivity">
 
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:contentDescription="@string/title"
+        app:layout_constraintBottom_toTopOf="@id/viewImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cooltext319949108322945" />
+
+    <ImageView
+
+        android:id="@+id/viewImage"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/uploadedimage"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView3"
+        android:src="@drawable/transparentcow" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="760dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/image_to_be_uploaded"
-            android:maxWidth="370dp"
-            android:maxHeight="200dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/cowbreedidentifierlogo5"
-            tools:layout_width="match_parent" />
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight=".5"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewImage">
 
 
         <TextView
             android:id="@+id/defaultInstructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:gravity="center_horizontal|center_vertical"
-            android:text="\nSelect either 'Camera' to pick a photo from camera/gallery or 'Web URL' to enter a web address \n"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/select_photo_from"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
 
         <ToggleButton
             android:id="@+id/toggleButtonUpload"
             android:layout_width="312dp"
-            android:layout_height="58dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@color/colorPrimary"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorPrimaryDark"
             android:textColor="@android:color/white"
             android:textOff="Camera"
-            android:textOn="Camera" />
+            android:textOn="Camera"
+            android:textStyle="bold"
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnSelectPhoto"
+            android:layout_width="309dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="Photo Gallery"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <ToggleButton
             android:id="@+id/toggleButtonURL"
             android:layout_width="310dp"
-            android:layout_height="61dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@color/colorPrimary"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/colorPrimaryDark"
             android:outlineAmbientShadowColor="@android:color/black"
             android:textColor="@android:color/white"
             android:textOff="Web URL"
-            android:textOn="Web URL" />
+            android:textOn="Web URL"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteY="589dp" />
 
         <Button
-
             android:id="@+id/btnSelectPhoto2"
-
             android:layout_width="314dp"
-
             android:layout_height="wrap_content"
-
             android:layout_gravity="center_horizontal"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             android:text="Take Photo with Phone"
             android:textColor="#FFFFFF"
+            android:textSize="18sp"
             android:visibility="gone" />
 
-        <Button
-
-            android:id="@+id/btnSelectPhoto"
-
-            android:layout_width="316dp"
-
-            android:layout_height="wrap_content"
-
-            android:layout_gravity="center_horizontal"
-            android:background="@color/colorPrimary"
-            android:text="Select Photo from Camera Roll"
-            android:textColor="#FFFFFF"
+        <TextView
+            android:id="@+id/BreedText"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:text="Cow Breed: "
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
             android:visibility="gone" />
 
         <EditText
             android:id="@+id/enterURL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
+            android:background="@color/colorPrimaryDark"
+            android:cursorVisible="@bool/truth"
             android:ems="10"
-            android:hint="@string/enter_web_address_of_url_to_upload"
-            android:importantForAutofill="no"
-            android:inputType="textUri"
-            android:text="Enter Web Address..."
-            android:visibility="invisible" />
+            android:inputType="textPersonName"
+            android:text="Type URL here"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/buttonURLEnter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="@color/colorPrimaryDark"
             android:text="Enter"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
             android:visibility="gone"
             tools:layout_editor_absoluteX="161dp"
             tools:layout_editor_absoluteY="320dp" />
-
-        <ImageView
-
-            android:id="@+id/viewImage"
-            android:layout_width="400dp"
-            android:layout_height="270dp"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="fitXY"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/BreedText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Cow Breed: "
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:visibility="gone" />
-
 
     </LinearLayout>
 
