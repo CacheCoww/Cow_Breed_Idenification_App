@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         final Button btnURLEnter = findViewById(R.id.buttonURLEnter);
         final ImageView viewImage=(ImageView)findViewById(R.id.viewImage);
         final Button btnTakePhoto = (Button)findViewById(R.id.btnSelectPhoto2);
+        final Button startOver = (Button)findViewById(R.id.startOver);
 
 
         //3 Main Button Selections
@@ -109,12 +110,17 @@ public class MainActivity extends AppCompatActivity {
             btnURLEnter.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     String cowURL = imageURI.getText().toString();
+                    //cowURL="http://mediad.publicbroadcasting.net/p/shared/npr/styles/x_large/nprshared/201802/582782417.jpg";
+                    //cowURL = "https://us.123rf.com/450wm/sublimage/sublimage1702/sublimage170200116/72524962-vertical-oxblood-red-barn-door-boards-and-planks-background-one-red-hinge-.jpg?ver=6";
                     boolean validUrl = URLUtil.isValidUrl(cowURL);
                     if (cowURL == null || validUrl == false) {
                         defaultTextView.setText("Web URL entered is invalid");
+                        final Button startOver = (Button)findViewById(R.id.startOver);
+                        startOver.setVisibility(View.VISIBLE);
                     } else {
                         btnURLEnter.setVisibility(View.GONE);
                         imageURI.setVisibility(View.GONE);
+                        defaultTextView.setVisibility(View.INVISIBLE);
                         autoMLTest(cowURL);
                     }
                 }
@@ -155,6 +161,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Start Over button to go back to 'main screen'
+        startOver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                button_url.setVisibility(View.VISIBLE);
+                button_camera.setVisibility(View.VISIBLE);
+                btnOpenGallery.setVisibility(View.VISIBLE);
+                viewImage.setImageResource(R.drawable.transparentcow);
+                breedTextView.setVisibility(View.GONE);
+                startOver.setVisibility(View.GONE);
+                imageURI.setVisibility(View.GONE);
+                btnURLEnter.setVisibility(View.GONE);
+                defaultTextView.setText("Select Photo from:");
+            }
+        });
+
     }
 
 
@@ -165,10 +187,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method to select image from Phones photo gallery
-     * User will be asked to provide consent for app to access the user's data
      */
     private void selectImage() {
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1); Not Needed
         Intent intent = new Intent(Intent.ACTION_PICK);
         File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String pictureDirectoryPath = pictureDirectory.getPath();
@@ -195,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
                     btnTakePhoto.setVisibility(View.GONE);
                     viewImage.setImageBitmap(bitmap);
                     autoMLTest("url");
+                    final Button startOver = (Button)findViewById(R.id.startOver);
+                    startOver.setVisibility(View.VISIBLE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -209,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
                     btnTakePhoto.setVisibility(View.GONE);
                     viewImage.setImageBitmap(bitmap);
                     autoMLTest("camera");
+                    final Button startOver = (Button)findViewById(R.id.startOver);
+                    startOver.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -227,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             String base64webimage;
+            final String cowURL = url;
 
             //Sets the base64 string depending on whether photo comes from web or phone
             if (button_type == 1) {
@@ -288,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(final JSONObject response) {
-                                apiTestCallDone(response);
+                                apiTestCallDone(response, cowURL);
 
                             }
                         }, new Response.ErrorListener() {
@@ -330,19 +356,24 @@ public class MainActivity extends AppCompatActivity {
      * Parse JSON response from model
      * @param response
      */
-    void apiTestCallDone(JSONObject response){
+    void apiTestCallDone(JSONObject response, String cowURL){
         try {
             JSONObject newResponse = response;
             Log.d(TAG, newResponse.toString(2)); //Test response from API
             JSONArray arrRet = response.getJSONArray("payload");
             JSONObject objRet = (JSONObject) arrRet.get(0);
             String displayName = (String) objRet.get("displayName");
-            Log.d(TAG, displayName);
-            final TextView myTextView = (TextView) findViewById(R.id.BreedText);
-            final TextView defaultTextView = findViewById(R.id.defaultInstructions);
-            defaultTextView.setText("Cow Breed:");
-            //Convert model labels to Strings
-            Map<String, String> breedMap = new HashMap<>();
+            JSONObject classification = (JSONObject) objRet.getJSONObject("classification");
+            double score = (double) classification.get("score");
+            Log.d(TAG, Double.toString(score));
+
+            if (score > 0.50 || button_type == 0) {
+                final TextView myTextView = (TextView) findViewById(R.id.BreedText);
+                final TextView defaultTextView = findViewById(R.id.defaultInstructions);
+                defaultTextView.setVisibility(View.VISIBLE);
+                defaultTextView.setText("Cow Breed:");
+                //Convert model labels to Strings
+                Map<String, String> breedMap = new HashMap<>();
                 breedMap.put("holstein", "Holstein");
                 breedMap.put("texaslonghorn", "Texas Longhorn");
                 breedMap.put("charolais", "Charolais");
@@ -351,22 +382,36 @@ public class MainActivity extends AppCompatActivity {
                 breedMap.put("limousin", "Limousin");
                 breedMap.put("simmental", "Simmental");
                 breedMap.put("hereford", "Hereford");
-            myTextView.setText(breedMap.get(displayName));
-            myTextView.setVisibility(View.VISIBLE);
+                myTextView.setText(breedMap.get(displayName));
+                myTextView.setVisibility(View.VISIBLE);
+                final Button startOver = (Button) findViewById(R.id.startOver);
+                startOver.setVisibility(View.VISIBLE);
+            } else {
+                //Score is less than 0.50- probably not a cow, only works for URLs currently
+                startVisionCall(cowURL);
+            }
 
         } catch (JSONException e) {
             Log.d(TAG, "An Unexpected Error occurred");
-            //startAPICall
+            if (button_type == 1) {
+                startVisionCall(cowURL);
+            } else {
+                final TextView defaultTextView = findViewById(R.id.defaultInstructions);
+                defaultTextView.setVisibility(View.VISIBLE);
+                defaultTextView.setText("An unexpected error occurred. Please try again");
+                final Button startOver = (Button) findViewById(R.id.startOver);
+                startOver.setVisibility(View.VISIBLE);
+            }
         }
 
     }
 
     /**
-     * //API call to the Google Vision API - will serve as backup if Cow Breed Identifier does not identify a
+     * //API call to the Google Vision API - will serve as backup if Cow Breed Identifier does not identify a cow with high precision
      * Will return the first result of the Google Vision API call
      * @param imageurl
      */
-    void startAPICall(final String imageurl) {
+    void startVisionCall(final String imageurl) {
         try {
             //JSON data needed for Google Vision API
             JSONObject JSONObjOverall = new JSONObject();
@@ -376,16 +421,9 @@ public class MainActivity extends AppCompatActivity {
             JSONObject JSONObjImagesrc = new JSONObject();
             JSONArray JSONArrayFeature = new JSONArray();
             JSONObject JSONObjFeature = new JSONObject();
-            //JSONObject JSONBase64img = new JSONObject();
 
-            //Arranging JSON data into proper format
             JSONObjImagesrc.put("imageUri", imageurl);
-            //Image content depending on whether from camera or URL
-            if (button_type == 0) {
-                JSONObjImage.put("content", imageurl);
-            } else {
-                JSONObjImage.put("source", JSONObjImagesrc);
-            }
+            JSONObjImage.put("source", JSONObjImagesrc);
 
             JSONObjFeature.put("type", "LABEL_DETECTION");
             JSONObjFeature.put("maxResults", 9);
@@ -397,11 +435,20 @@ public class MainActivity extends AppCompatActivity {
             // final JSON Object to send to API
             JSONObjOverall.put("requests", JSONArrayOverall);
 
+            String sampleCowImage = stringFromImage();
+            byte[] bytez = sampleCowImage.getBytes();
+            String goat = new String(Base64.decode(bytez, Base64.DEFAULT));
+            InputStream is = new ByteArrayInputStream(goat.getBytes(Charset.forName("UTF-8")));
 
-            //API POST Request
+            GoogleCredentials cowImageRep = GoogleCredentials.fromStream(is).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
+            cowImageRep.refreshIfExpired();
+            AccessToken accesstoken = cowImageRep.getAccessToken();
+            final String token = accesstoken.getTokenValue();
+            is.close();
+
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.POST,
-                    "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBnnTQAZ35okyLxeiHf8b76OfDE_30rEtk",
+                    "https://vision.googleapis.com/v1/images:annotate",
                     JSONObjOverall,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -413,6 +460,27 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(final VolleyError error) {
                     Log.e(TAG, error.toString());
+                }
+            })
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+                @Override
+                public int getCurrentTimeout() {
+                    return 50000;
+                }
+                @Override
+                public int getCurrentRetryCount() {
+                    return 50000;
+                }
+                @Override
+                public void retry(VolleyError error) throws VolleyError {
                 }
             });
 
@@ -442,15 +510,26 @@ public class MainActivity extends AppCompatActivity {
                 listOfDescription.add(listObject.get("description").toString());
             }
 
-            Log.d(TAG, response.toString(2));
-            Log.d(TAG, listOfDescription.toString());
+            //Log.d(TAG, response.toString(2));
+            //Log.d(TAG, listOfDescription.toString());
 
             //Display result on screen: Current implementation displays top result
+            final TextView defaultTextView = findViewById(R.id.defaultInstructions);
+            defaultTextView.setVisibility(View.VISIBLE);
+            defaultTextView.setText("Cow Breed:");
             final TextView myTextView = (TextView) findViewById(R.id.BreedText);
-            myTextView.setText("Animal:" + listOfDescription.get(0));
+            myTextView.setVisibility(View.VISIBLE);
+            myTextView.setText(listOfDescription.get(0));
+            final Button startOver = (Button)findViewById(R.id.startOver);
+            startOver.setVisibility(View.VISIBLE);
 
         } catch (JSONException ignored) {
-            Log.d(TAG, "Problem parsing JSON Response");
+            Log.d(TAG, "An Unexpected Error occurred");
+            final TextView defaultTextView = findViewById(R.id.defaultInstructions);
+            defaultTextView.setVisibility(View.VISIBLE);
+            defaultTextView.setText("An unexpected error occurred. Please try again");
+            final Button startOver = (Button)findViewById(R.id.startOver);
+            startOver.setVisibility(View.VISIBLE);
         }
     }
 
@@ -458,3 +537,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+//TODO :Error handling
+//Invalid URL-done
+//API Does not return result-done
+//Empty Photo gallery
+//Cant access camera/gallery
+
+//TODO: Vision Call for Camera/Gallery

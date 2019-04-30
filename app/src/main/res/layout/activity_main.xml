@@ -61,10 +61,11 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:gravity="center_horizontal|center_vertical"
+            android:shadowColor="@android:color/black"
             android:text="@string/select_photo_from"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ToggleButton
             android:id="@+id/toggleButtonUpload"
@@ -114,8 +115,9 @@
             android:textColor="@android:color/white"
             android:textOff="Web URL"
             android:textOn="Web URL"
-            android:textStyle="bold"
             android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="visible"
             tools:layout_editor_absoluteY="589dp" />
 
         <Button
@@ -132,17 +134,23 @@
         <TextView
             android:id="@+id/BreedText"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:background="@color/colorPrimaryDark"
+            android:layout_weight="1"
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
+            android:shadowColor="@android:color/white"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
             android:text="Cow Breed: "
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:visibility="gone" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="53dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:fontFamily="@font/oneworldonefuture" />
 
         <EditText
             android:id="@+id/enterURL"
@@ -172,6 +180,25 @@
             android:visibility="gone"
             tools:layout_editor_absoluteX="161dp"
             tools:layout_editor_absoluteY="320dp" />
+
+        <Button
+            android:id="@+id/startOver"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center_horizontal"
+            android:text="Start Over"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
     </LinearLayout>
 
