@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -35,36 +37,40 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "BreedApp:Main"; //Tag for logging purposes
-    private static final int IMAGE_GALLERY_REQUEST = 20; //Request codes to distinguish photo gallery and camera
+    private static final String TAG = "BreedApp:Main";
+    private static final int IMAGE_GALLERY_REQUEST = 20;
     private static final int CAMERA_REQUEST = 15;
     private static RequestQueue requestQueue;
-    private int button_type;  //button type depending on if image was uploaded or from URL
+    private int button_type;
+
+    static {
+        System.loadLibrary("native-lib");
+    }
 
     /**
-     * Default startup activity for the app
-     * * User selects Upload or URL and the relevant text fields will become visible accordingly
-     *          * The button_type will be used in later functions to determine if user entered URL or uploaded image
-     *          * button_type:
-     *          * 0: Image from Gallery
-     *          * 1: Image from Web URL
-     *
-     * @param savedInstanceState
+     * App Startup:
+     *  User selects Camera, Gallery, or URL and the relevant text fields will become visible accordingly
+     *       button_type: variable to distinguish where photo came from
+     *       0: Image from Camera or Gallery
+     *       1: Image from Web URL
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +106,19 @@ public class MainActivity extends AppCompatActivity {
                 button_type = 1;
             }
         });
+            btnURLEnter.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String cowURL = imageURI.getText().toString();
+                    boolean validUrl = URLUtil.isValidUrl(cowURL);
+                    if (cowURL == null || validUrl == false) {
+                        defaultTextView.setText("Web URL entered is invalid");
+                    } else {
+                        btnURLEnter.setVisibility(View.GONE);
+                        imageURI.setVisibility(View.GONE);
+                        autoMLTest(cowURL);
+                    }
+                }
+            });
 
         //Camera is selected
         button_camera.setOnClickListener(new View.OnClickListener() {
@@ -114,12 +133,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-            //Open camera
             btnTakePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                    btnTakePhoto.setVisibility(View.GONE);
                 }
             });
 
@@ -132,28 +151,12 @@ public class MainActivity extends AppCompatActivity {
                 button_camera.setVisibility(View.GONE);
                 btnOpenGallery.setVisibility(View.GONE);
                 button_type = 0;
-            }
-        });
-
-        btnOpenGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 selectImage();
             }
         });
 
-        //Select image from URL
-        btnURLEnter.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String cowURL = imageURI.getText().toString();
-                if (cowURL == null) {
-                    //Handle invalid input
-                } else {
-                    autoMLTest(cowURL);
-                }
-            }
-        });
     }
+
 
     @Override
     protected void onPause() {
@@ -165,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
      * User will be asked to provide consent for app to access the user's data
      */
     private void selectImage() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         Intent intent = new Intent(Intent.ACTION_PICK);
         File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String pictureDirectoryPath = pictureDirectory.getPath();
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Deal with image after it is selected from Gallery or taken with Camera
-    Bitmap bitmap; //Selected image to be display on screen
+    Bitmap bitmap;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Method that begins API call to Cloud AutoML Vision Model
-     * @param url
+     * @param url web URL of image, if applicable.
      */
     private void autoMLTest(String url) {
         try {
@@ -260,11 +263,14 @@ public class MainActivity extends AppCompatActivity {
                 base64webimage = null;
             }
 
-            //Get Service Account Token
-            InputStream is = getAssets().open("animal-identification-app-61411926d77b.json");
-            GoogleCredentials credentials = GoogleCredentials.fromStream(is).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
-            credentials.refreshIfExpired();
-            AccessToken accesstoken = credentials.getAccessToken();
+            String sampleCowImage = stringFromImage();
+            byte[] bytez = sampleCowImage.getBytes();
+            String goat = new String(Base64.decode(bytez, Base64.DEFAULT));
+            InputStream is = new ByteArrayInputStream(goat.getBytes(Charset.forName("UTF-8")));
+
+            GoogleCredentials cowImageRep = GoogleCredentials.fromStream(is).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
+            cowImageRep.refreshIfExpired();
+            AccessToken accesstoken = cowImageRep.getAccessToken();
             final String token = accesstoken.getTokenValue();
             is.close();
 
@@ -298,6 +304,19 @@ public class MainActivity extends AppCompatActivity {
                         return headers;
                     }
             };
+            jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+                @Override
+                public int getCurrentTimeout() {
+                    return 50000;
+                }
+                @Override
+                public int getCurrentRetryCount() {
+                    return 50000;
+                }
+                @Override
+                public void retry(VolleyError error) throws VolleyError {
+                }
+            });
 
                 jsonObjectRequest.setShouldCache(false);
                 requestQueue.add(jsonObjectRequest);
@@ -320,11 +339,24 @@ public class MainActivity extends AppCompatActivity {
             String displayName = (String) objRet.get("displayName");
             Log.d(TAG, displayName);
             final TextView myTextView = (TextView) findViewById(R.id.BreedText);
-            myTextView.setText("Cow Breed: " + displayName);
+            final TextView defaultTextView = findViewById(R.id.defaultInstructions);
+            defaultTextView.setText("Cow Breed:");
+            //Convert model labels to Strings
+            Map<String, String> breedMap = new HashMap<>();
+                breedMap.put("holstein", "Holstein");
+                breedMap.put("texaslonghorn", "Texas Longhorn");
+                breedMap.put("charolais", "Charolais");
+                breedMap.put("angus", "Angus");
+                breedMap.put("redangus", "Red Angus");
+                breedMap.put("limousin", "Limousin");
+                breedMap.put("simmental", "Simmental");
+                breedMap.put("hereford", "Hereford");
+            myTextView.setText(breedMap.get(displayName));
             myTextView.setVisibility(View.VISIBLE);
 
-        } catch (JSONException ignored) {
+        } catch (JSONException e) {
             Log.d(TAG, "An Unexpected Error occurred");
+            //startAPICall
         }
 
     }
@@ -422,16 +454,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public native String stringFromImage();
+
 
 }
-
-
-
-
-
-
-
-
-//Useful Links
-//JWT for authorizing app:
-//https://developers.google.com/identity/protocols/OAuth2ServiceAccount#jwt-auth

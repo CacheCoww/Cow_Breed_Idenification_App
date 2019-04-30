@@ -90,5 +90,22 @@ byte[] byteArray = byteArrayOutputStream .toByteArray();
                     myTextView.setText(testcow);
                 }*/
 
+/*
 
+   public String readFile(String fileName) throws IOException
+    {
+        BufferedReader reader = null;
+        reader = new BufferedReader(new InputStreamReader(getAssets().open(fileName), "UTF-8"));
+
+        String content = "";
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+            content = content + line;
+        }
+
+        return content;
+
+    }
+ */
 
