@@ -12,5 +12,5 @@ Authentication was done using OAuth2 and JSON key file. File is stored using And
 Instructions and link for download will be updated here in the future. 
 
 ## Screenshots
-<img src="https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/image.png?raw=true">
+<img src="https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/image.png?raw=true">  <img src="https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/screenshotcowapp1.PNG?raw=true">  <img src="https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/screenshotcowapp2.PNG?raw=true">
 
