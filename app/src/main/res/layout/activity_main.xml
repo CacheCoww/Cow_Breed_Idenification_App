@@ -101,7 +101,7 @@
             android:textStyle="bold"
             android:visibility="visible" />
 
-        <ToggleButton
+        <Button
             android:id="@+id/toggleButtonURL"
             android:layout_width="310dp"
             android:layout_height="wrap_content"
@@ -113,8 +113,7 @@
             android:background="@color/colorPrimaryDark"
             android:outlineAmbientShadowColor="@android:color/black"
             android:textColor="@android:color/white"
-            android:textOff="Web URL"
-            android:textOn="Web URL"
+            android:text="Web URL"
             android:textSize="24sp"
             android:textStyle="bold"
             android:visibility="visible"
