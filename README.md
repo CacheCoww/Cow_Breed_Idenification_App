@@ -14,6 +14,8 @@ Authentication in this app was done using OAuth2 and JSON key file. The key file
 ## Setting up the Code
 The main code for this project can be found in Main Activity and Activity Results. The XML code for the layout of the app can be found in the [Layout file](https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/app/src/main/res/layout/activity_main.xml). Most of the layout can be done using the GUI. The background for the app was created in Microsoft Word. The logo was created using cooltext.com. 
 
+The API request is performed using a POST request according the the Google AutoML guidelines. The response is parsed for the cow breed and the result is returned to the user using a map to correct formatting. The user is then offered the option to start again using a start over button. If an error occurs at any point, the user will be prompted to start over.
+
 ## Installing the App
 The beta version of the app will be released on the App Store shortly
 
@@ -30,3 +32,18 @@ The Machine Learning model was created using images of cows. It currently suppor
 6. Charolais
 7. Simmental
 8. Texas Longhorn
+9. Highland
+10. Limousin
+11. Ayrshire
+12. Belted Galloway
+13. Brahman
+14. Gelbvieh
+15. Guernsey
+16. Shorthorn
+                
+## Future Updates
+1. The Google AutoML Beta API will be disappearing on February 20, 2020. The new AutoML API has an unfavorable price structure so the model will possibly be moved to an Edge model, which can run offline independently if the Cloud but gives lower accuracy.
+
+2. Updates to include the app in different languages and settings
+
+3. Option to post results on Facebook and other social media platforms.
