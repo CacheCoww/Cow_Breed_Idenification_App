@@ -1,7 +1,7 @@
 # Cow_Breed_Idenification_App
 
 ## Project Overview
-This is an Android App written in Java designed to detect the Cow Breed from an image of a cow using the Google Cloud AutoML Vision API. The photo can be obtained from the phone's camera, photo gallery, or a web URL.
+This is an Android App written in Java designed to detect the Cow Breed from an image of a cow using the Google Cloud AutoML Vision API. The photo can be obtained from the phone's camera, photo gallery, or a web URL. If the photo does not score high enough for any of the cow breeds in the machine learning algorithm (possibly because it is not a cow), then the app tries to identify what else the photo could be.
 
 ## Creating the Model
 The first step is to create a Google Cloud account and enable the AutoML Cloud API. It also requires billing to be enabled. Once that is set up, The GUI was can be used to create the model. Each breed of cow had 50-100 images. The AutoML API recommends at least 100 images per label for accurate results. Most of the images were downloaded from Google using the Fatkun Batch Download Chrome extension. The next step is to train the model, evaluate it, and then use it to predict. After training, it gives you information for using the REST API. A Google service account is required to use the REST API.
