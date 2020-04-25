@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    //Need to get permission from user to access device camera/gallery
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have read or write permission
         int writePermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -251,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 }
 

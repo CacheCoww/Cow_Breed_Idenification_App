@@ -1,11 +1,15 @@
 package com.cowbreedidentifier.cowpoopingapp;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -32,20 +36,29 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.tensorflow.lite.Interpreter;
 
 public class DisplayResult extends AppCompatActivity {
     private static final String TAG = "BreedApp:Main";
     private static RequestQueue requestQueue;
     private int button_type;
     String base64WebImage;
+    protected Interpreter tflite;
+
+
     static {
         System.loadLibrary("native-lib");
     }
@@ -62,7 +75,10 @@ public class DisplayResult extends AppCompatActivity {
     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-    //Display image on screen
+    //Get image from main activity and Display image on screen
+        //3 functions corresponding to where image came from to run Cow ML Model
+
+
         if (button_type == 0) {
             displayCameraImage(cowURL);
         }
@@ -73,7 +89,7 @@ public class DisplayResult extends AppCompatActivity {
             displayWebImage(cowURL);
         }
 
-
+    //Start Over button to go back to main screen/activity
         final Button startOver = (Button) findViewById(R.id.startOver);
         startOver.setVisibility(View.VISIBLE);
 
@@ -163,6 +179,25 @@ public class DisplayResult extends AppCompatActivity {
 
     }
 
+    /** Memory-map the model file in Assets. */
+    private MappedByteBuffer loadModelFile(Activity activity) throws IOException {
+        AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(getModelPath());
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+    }
+
+    String getModelPath(){
+        return "file:///android_asset/model.tflite";
+    }
+    /**
+     * Function for performing the cow breed identification using an image in base64 format. If the function fails to identify a cow
+     * then the image is routed to the Vision Function call which performs a generic identification of the image.
+     * @param base64WebImage
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     void MLTest(String base64WebImage){
         try{
         String sampleCowImage = stringFromImage();
@@ -185,12 +220,16 @@ public class DisplayResult extends AppCompatActivity {
         JSONObjInner.put("image", JSONObjImage);
         JSONObjPayload.put("payload", JSONObjInner);
 
+        try (Interpreter interpreter = new Interpreter(file_of_a_tensorflowlite_model)) {
+            interpreter.run(input, output);
+        }
+
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 "https://automl.googleapis.com/v1beta1/projects/animal-identification-app/locations/us-central1/models/ICN7163460716149905373:predict", JSONObjPayload,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
-                        apiTestCallDone(response);
+                        MLTestResponse(response);
 
                     }
                 }, new Response.ErrorListener() {
@@ -233,15 +272,12 @@ public class DisplayResult extends AppCompatActivity {
     }
 }
 
-/*    public void onResult(View view) {
-        Intent intent = new Intent(this, DisplayResult.class);
-        startActivity(intent);
-    }*/
+
     /**
-     * Parse JSON response from model
+     * Function that parses JSON response from ML model and returns cow breed as String displayed on screen
      * @param response
      */
-    void apiTestCallDone(JSONObject response){
+    void MLTestResponse(JSONObject response){
         try {
             JSONObject newResponse = response;
             //Log.d(TAG, newResponse.toString(2)); //Test response from API
@@ -385,8 +421,11 @@ public class DisplayResult extends AppCompatActivity {
     }
 
 
-    //Response from Google Vision API
-    //Returns first match
+    /**
+     * Function that returns the response from the generic vision call. The first result is returned to the user and
+     * is designated as a 'non-cow breed'
+     * @param response
+     */
     void apiCallDone(JSONObject response) {
         try {
             //Parse JSON Response

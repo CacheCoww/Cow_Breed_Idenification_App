@@ -1,0 +1,16 @@
+jersey
+angus
+highland
+charolais
+ayrshire
+limousin
+shorthorn
+beltedgalloway
+holstein
+brahman
+texaslonghorn
+simmental
+gelbvieh
+redangus
+hereford
+guernsey

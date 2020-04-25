@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.cowbreedidentifier.cowpoopingapp"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 28
-        versionCode 4
-        versionName "4.0"
+        versionCode 7
+        versionName "7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
@@ -17,7 +17,16 @@ android {
     }
 
     packagingOptions {
-        pickFirst 'META-INF/*'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/atomicfu.kotlin_module'
+        exclude 'META-INF/MANIFEST.MF'
     }
     buildTypes {
         release {
@@ -30,7 +39,9 @@ android {
             path "src/main/cpp/CMakeLists.txt"
         }
     }
-
+    aaptOptions {
+        noCompress "tflite"
+    }
 
 }
 
@@ -49,6 +60,10 @@ dependencies {
     //implementation 'com.android.support:design:28.0.0'
     //implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.google.auth:google-auth-library-oauth2-http:0.15.0'
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.0.0-nightly'
     //implementation 'android.arch.lifecycle:extensions:1.1.0'
 
 }
+
