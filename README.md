@@ -1,4 +1,5 @@
 # Cow_Breed_Idenification_App
+<img src="https://github.com/hmsmith5/Cow_Breed_Idenification_App/blob/master/featurelogocowapp4.PNG?raw=true">
 
 ## Project Overview
 This is an Android App written in Java designed to detect the Cow Breed from an image of a cow using the Google Cloud AutoML Vision API (now Tensorflow Lite Edge Model, see Branch). The photo can be obtained from the phone's camera, photo gallery, or a web URL. If the photo does not score high enough for any of the cow breeds in the machine learning algorithm (possibly because it is not a cow), then the app tries to identify what else the photo could be.
